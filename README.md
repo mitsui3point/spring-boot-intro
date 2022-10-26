@@ -16,7 +16,7 @@
 * 컨트롤러에서 리턴 값으로 문자를 반환하면,  
 뷰 리졸버( viewResolver )가 화면을 찾아서 처리한다.
     1. 스프링 부트 템플릿엔진 기본 viewName 매핑
-    2. ```resources:templates/``` +{ViewName}+ ```.html```
+    2. `resources:templates/` +{ViewName}+ `.html`
 
 ## 2.빌드하고 실행하기
 
@@ -52,7 +52,6 @@
 ### 실행
 * http://localhost:8080/hello-mvc?name=spring
 
-
 ### MVC flowchart
 1. 웹 브라우저 => 내장 톰캣 서버
     * http://localhost:8080/hello-mvc?name=spring
@@ -64,3 +63,43 @@
     * hello-mvc 의 return templates/hello-template.html 에 Thymeleaf 템플릿 엔진 처리
 4. viewResolver => 웹 브라우저
     * Thymeleaf 템플릿 엔진 처리 후 HTML 변환
+
+## API
+
+### @ResponseBody 문자 반환
+* `@ResponseBody` 를 사용하면 뷰 리졸버`( viewResolver )`를 사용하지 않음
+* 대신에 HTTP의 BODY에 문자 내용을 직접 반환(HTML BODY TAG를 말하는 것이 아님)
+
+### 실행
+* http://localhost:8080/hello-spring?name=spring
+
+### @ResponseBody 객체 반환
+* `@ResponseBody` 를 사용하고, 객체를 반환하면 객체가 JSON으로 변환됨
+
+### 실행
+* http://localhost:8080/hello-api?name=spring
+
+### @ResponseBody flowchart
+1. 웹 브라우저 => 내장 톰캣 서버
+    * http://localhost:8080/hello-strng?name=spring
+    * @ResponseBody return: hello spring
+    * http://localhost:8080/hello-api?name=spring
+    * @ResponseBody return: hello(name:spring)
+2. 내장 톰캣 서버 => 스프링 컨테이너(helloController)
+3. 스프링 컨테이너(helloController) => 스프링 컨테이너(HttpMessageConverter)
+    * HttpMessageConverter  
+      implements JsonConverter, StringConverter
+4. 스프링 컨테이너(HttpMessageConverter) => 웹 브라우저
+    * hello spring
+    * {"name" : "spring"}
+
+### @ResponseBody 사용 원리
+* `@ResponseBody` 를 사용
+* HTTP의 BODY에 문자 내용을 직접 반환
+* `viewResolver` 대신에 `HttpMessageConverter` 가 동작
+* 기본 문자처리: `StringHttpMessageConverter`
+* 기본 객체처리: `MappingJackson2HttpMessageConverter`
+* byte 처리 등등 기타 여러 `HttpMessageConverter`가 기본으로 등록되어 있음
+
+> 참고: 클라이언트의 HTTP Accept 해더와 서버의 컨트롤러 반환 타입 정보 둘을 조합해서
+HttpMessageConverter 가 선택된다.
