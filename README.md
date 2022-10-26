@@ -43,3 +43,24 @@
     * hello-static 관련 컨트롤러 색인, 없음 
     * static/hello-static.html 색인, 존재
 3. static/hello-static.html => 웹 브라우저
+
+## MVC와 템플릿 엔진
+
+### MVC
+* Model, View, Controller
+
+### 실행
+* http://localhost:8080/hello-mvc?name=spring
+
+
+### MVC flowchart
+1. 웹 브라우저 => 내장 톰캣 서버
+    * http://localhost:8080/hello-mvc?name=spring
+2. 내장 톰캣 서버 => 스프링 컨테이너
+    * hello-mvc 관련 컨트롤러 색인, 존재
+    * return hello-template
+    * model(name:spring)
+3. 스프링 컨테이너 => viewResolver
+    * hello-mvc 의 return templates/hello-template.html 에 Thymeleaf 템플릿 엔진 처리
+4. viewResolver => 웹 브라우저
+    * Thymeleaf 템플릿 엔진 처리 후 HTML 변환
