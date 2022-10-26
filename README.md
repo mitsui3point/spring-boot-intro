@@ -1,4 +1,5 @@
 [프로젝트 환경설정](#프로젝트-환경설정)  
+[스프링 웹 개발 기초](#스프링-웹-개발-기초)  
 # 프로젝트 환경설정
 
 ## 1.View 환경 설정
@@ -25,3 +26,20 @@
 3. java -jar hello-spring-0.0.1-SNAPSHOT.jar
 4. 실행 확인
    * [IntelliJ Git bash default 적용](https://violetboralee.medium.com/intellij-idea%EC%99%80-git-bash-%EC%97%B0%EB%8F%99%ED%95%98%EA%B8%B0-63e8216aa7de)
+
+# 스프링 웹 개발 기초
+
+## 정적 컨텐츠
+
+### 스프링 부트 정적 컨텐츠 기능
+* [스프링 부트 정적 컨텐츠 문서](https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web.servlet.spring-mvc.static-content)
+
+### 실행
+* http://localhost:8080/hello-static.html
+
+### 정적 컨텐츠 기능 flowchart
+1. 웹 브라우저 (http://localhost:8080/hello-static.html)  
+2. 내장 톰캣 서버 => 스프링 컨테이너
+    * hello-static 관련 컨트롤러 색인, 없음 
+    * static/hello-static.html 색인, 존재
+3. static/hello-static.html => 웹 브라우저
