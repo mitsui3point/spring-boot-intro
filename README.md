@@ -79,7 +79,7 @@
 ### 실행
 * http://localhost:8080/hello-api?name=spring
 
-### @ResponseBody flowchart
+### `@ResponseBody` flowchart
 1. 웹 브라우저 => 내장 톰캣 서버
     * http://localhost:8080/hello-strng?name=spring
     * @ResponseBody return: hello spring
@@ -93,7 +93,7 @@
     * hello spring
     * {"name" : "spring"}
 
-### @ResponseBody 사용 원리
+### `@ResponseBody` 사용 원리
 * `@ResponseBody` 를 사용
 * HTTP의 BODY에 문자 내용을 직접 반환
 * `viewResolver` 대신에 `HttpMessageConverter` 가 동작
@@ -161,7 +161,7 @@ MemberService  →  MemberRepository(interface)
 ### 회원 리포지토리 메모리 구현체 테스트
 * `src/test/java` 하위 폴더에 `MemoryMemberRepositoryTest` 를 생성한다.
 
-### `@AfterEach` 
+### `@AfterEach`
 * 한번에 여러 테스트를 실행하면 메모리 DB에 직전 테스트의 결과가 남을 수 있다.
 * 이렇게 되면 다음 이전 테스트 때문에 다음 테스트가 실패할 가능성이 있다.
 * `@AfterEach` 를 사용하면 각 테스트가 종료될 때 마다 이 기능을 실행한다.
@@ -169,3 +169,14 @@ MemberService  →  MemberRepository(interface)
 
 ### 테스트는 각각 독립적으로 실행되어야 한다.
 * 테스트 순서에 의존관계가 있는 것은 좋은 테스트가 아니다.
+
+## 회원 서비스 개발
+* 회원가입
+* 전체 회원 조회
+
+## 회원 서비스 테스트
+* 기존에는 회원 서비스가 메모리 회원 리포지토리를 직접 생성하게 했다.
+* 회원 리포지토리의 코드가 **회원 서비스 코드를 DI 가능하게 변경한다.**
+### `@BeforeEach`
+* 각 테스트 실행 전에 호출된다. 
+* 테스트가 서로 영향이 없도록 항상 새로운 객체를 생성하고, 의존관계도 새로 맺어준다
