@@ -40,7 +40,7 @@ class MemberServiceTest {
         service.join(member2);
 
         // when
-        List<Member> actual = service.findAll();
+        List<Member> actual = service.findMembers();
 
         // then
         assertThat(actual).isEqualTo(Arrays.asList(new Member[]{member1, member2}));
