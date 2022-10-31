@@ -370,6 +370,7 @@ setter 주입,
 > spring.datasource.username=sa 공백 주의,  
 > 공백은 모두 제거해야 한다.
 ### Jdbc 리포지토리 구현
+* JdbcMemberRepository
 > 주의! 이렇게 JDBC API로 직접 코딩하는 것은 20년 전 이야기이다. 참고만 할것.
 * Jdbc 회원 리포지토리 구현
 * 스프링 설정 변경
@@ -414,3 +415,18 @@ flowchart
   * 테스트 케이스에 이 애노테이션이 있으면, 테스트 시작 전에 트랜잭션을 시작하고, 테스트 완료 후에 항상 롤백한다.
   * 이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다.
   * 물론, JUnit 이 아닐 경우에 `@Transactional` 을 붙이게 되면 rollback 되지 않고 transaction 단위로 commit 이 진행된다.
+> 참고; `@Transactional` test 에서 사용될 경우, 서비스 로직에서 사용될 경우  
+> [https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/](https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/)  
+> [https://me-analyzingdata.tistory.com/entry/SpringTransactional%EA%B3%BC-JUnit-Test](https://me-analyzingdata.tistory.com/entry/SpringTransactional%EA%B3%BC-JUnit-Test)
+
+## 스프링 JdbcTemplate
+* 순수 Jdbc 와 동일한 환경설정을 하면 된다.
+* 스프링 JdbcTemplate 과 MyBatis 같은 라이브러리는 JDBC API 에서 본 반복 코드를 대부분 제거해 준다.
+* 하지만 SQL 은 직접 작성해야 한다.
+> 참고; 디자인 패턴중 template method 라는 pattern 이 있는데,  
+> template method pattern 을 많이 활용하여 코드를 줄였기 때문에 이름을 이렇게 지었다.
+### 스프링 JdbcTemplate 회원 리포지토리 생성
+* JdbcTemplateMemberRepository
+> 참고; 생성자가 딱 1개만 있고, 스프링 bean 에 등록되면, `@Autowired` 생략해도 된다.
+### JdbcTemplate 을 사용하도록 스프링 설정 변경
+* SpringConfig
