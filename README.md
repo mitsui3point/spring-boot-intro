@@ -3,6 +3,7 @@
 [스프링 빈과 의존관계](#스프링-빈과-의존관계)  
 [회원 관리 예제 - 웹 MVC 개발](#회원-관리-예제---웹-MVC-개발)  
 [H2 데이터베이스 설치](#H2-데이터베이스-설치)  
+[순수 Jdbc](#순수-Jdbc)  
 # 프로젝트 환경설정
 
 ## 1.View 환경 설정
@@ -366,3 +367,48 @@ setter 주입,
 > 참고로 다음과 같이 마지막에 공백이 들어가면 같은 오류가 발생한다.  
 > spring.datasource.username=sa 공백 주의,  
 > 공백은 모두 제거해야 한다.
+## Jdbc 리포지토리 구현
+> 주의! 이렇게 JDBC API로 직접 코딩하는 것은 20년 전 이야기이다. 참고만 할것.
+* Jdbc 회원 리포지토리 구현
+* 스프링 설정 변경
+  * DataSource 는 데이터베이스 커넥션을 획득할 때 사용하는 객체다.
+  * 스프링 부트는 데이터베이스 커넥션 정보를 바탕으로 DataSource 를 생성하고 스프링 빈으로 만들어ㅏ준다.
+  * 그래서 DI를 받을 수 있다.
+* 구현 클래스 추가 이미지
+```mermaid
+flowchart
+    subgraph main["구현 클래스 추가 이미지"]
+        direction LR;
+            A["MemberService"] ----> SUB_1;
+            SUB_1["MemberRepository(interface)"];
+            B["MemoryMemberRepository"] -.implements.-> SUB_1;
+            C["JdbcMemberRepository"] -.implements.-> SUB_1;
+    end
+```
+* 스프링 설정 이미지
+```mermaid
+flowchart
+    subgraph main["스프링 컨테이너"]
+        direction LR;
+        A["memberController"] ==> B;
+        B["memberService"] ==x C;
+        B ==> D;
+        C[" 'memory' memberRepository"];
+        D[" 'jdbc' memberRepository"];
+    end
+```
+* 개방 폐쇄 원칙(OCP; Open - Closed Principle)
+  * 확장에는 열려있고, 수정에는 닫혀있다.
+* 스프링의 DI(Dependencies Injection)을 사용하면 **기존 코드를 전혀 손대지 않고, 설정만으로 구현 클래스를 변경**할 수 있다.
+* 회원을 등록하고 DB 에 결과가 잘 입력되는지 확인하자.
+* 데이터를 DB 에 저장하므로 스프링 서버를 다시 실행해도 데이터가 안전하게 저장된다.
+
+## 스프링 통합 테스트
+* 스프링 컨테이너와 DB까지 연결한 통합 테스트를 진행해보자.
+### 회원 서비스 스프링 통합 테스트
+* `@SpringBootTest`
+  * 스프링 컨테이너와 테스트를 함께 실행한다
+* `@Transactional`
+  * 테스트 케이스에 이 애노테이션이 있으면, 테스트 시작 전에 트랜잭션을 시작하고, 테스트 완료 후에 항상 롤백한다.
+  * 이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다.
+  * 물론, JUnit 이 아닐 경우에 `@Transactional` 을 붙이게 되면 rollback 되지 않고 transaction 단위로 commit 이 진행된다.
