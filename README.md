@@ -473,3 +473,71 @@ flowchart
 * JPA 를 통한 모든 데이터 변경은 트랜잭션 안에서 실행해야 한다.
 ### JPA를 사용하도록 스프링 설정 변경
 * SpringConfig
+
+## 스프링 데이터 JPA
+* 스프링 부트와 JPA 만 사용해도 개발 생산성이 정말 많이 증가하고, 개발해야 할 코드도 확연히 줄어든다.
+* 여기에 스프링 데이터 JPA 를 사용하면, 기존의 한계를 넘어 마치 마법처럼, 리포지토리에 구현 클래스 없이 인터페이스 만으로 개발을 완료 할 수 있다.
+* 그리고 반복 개발해온 CRUD 기능도 스프링 데이터 JPA 가 모두 제공한다.
+* 스프링 부트와 JPA 기반 위에, 스프링 데이터 JPA 라는 환상적인 프레임워크를 더하면 개발이 정말 즐거워진다.
+* 지금까지 조금이라도 단순하고 반복이라 생각했던 개발 코드들이 확연하게 줄어든다.
+* 따라서 개발자는 핵심 비즈니스 로직을 개발하는 데 집중할 수 있다.
+* 실무에서 관계형 데이터베이스를 사용한다면 스프링 데이터 JPA 는 필수이다.
+> 주의: 스프링 데이터JPA 는 JPA 를 편리하게 사용하도록 도와주는 기술이다.  
+> 따라서 JPA 를 먼저 학습한 후에 스프링 JPA 를 학습하도록 한다.
+### 스프링 데이터 JPA 설정
+* 앞의 설정을 그대로 사용
+### 스프링 데이터 JPA 회원 리포지토리
+* SpringDataJpaMemberRepository
+  * interface 로 repository 구현체를 만듦
+  * interface 는 다중 extends 가 가능(JpaRepository<Member, Long>, MemberRepository)
+  * SpringDataJpaMemberRepository interface 가 JpaRepository<Member, Long> 를 받고 있으면, 구현체를 만들어 주고(프록시라는 기술을 활용),  스프링 빈에 등록을 한다.
+  * SpringConfig 에 injection 을 받고, 개발자는 그것을 그냥 가져다 쓰기만하면 된다. 
+  * 비지니스 레이어에서 공통화할수 없는 부분을 제외(20%)하고 모두(80%) 공통모듈 제공함.(ex.findByName)
+### 스프링 데이터 JPA 회원 리포지토리를 사용하도록 스프링 설정 변경
+* SpringConfig
+### 스프링 데이터 JPA가 `SpringDataJpaMemberRepository` 를 스프링 빈으로 자동 등록한다.
+### 스프링 데이터 JPA 제공 클래스
+```mermaid
+classDiagram
+    Repository <|-- CrudRepository: Inheritance
+    CrudRepository <|-- PagingAndSortingRepository : Inheritance
+    PagingAndSortingRepository <|-- JpaRepository : Inheritance
+
+    class Repository{
+        <<interface>>
+    }
+    class CrudRepository{
+        <<interface>>
+        save(S) S
+        findOne(ID) T
+        exists(ID) boolean
+        count() long
+        delete(T)
+        
+    }
+    class PagingAndSortingRepository {
+        <<interface>>
+        findAll(Sort) list~T~
+        findAll(Pageable) list~T~
+    }
+    class JpaRepository {
+        <<interface>>
+        findAll() list~T~
+        findAll(Sort) list~T~
+        findAll(Iterable~ID~) list~T~
+        save(Iterable~S~) list~S~
+        flush()
+        saveAndFlush(T) T
+        deleteInBatch(Iterable~T~)
+        deleteAllBatch()
+        getOne(ID) T
+    }
+```
+### 스프링 데이터 JPA 제공 기능
+* 인터페이스를 통한 기본적인 CRUD
+* findById(), findByEmail() 처럼 메서드 이름만으로 조회 기능 제공
+* 페이징 기능 자동 제공
+> 참고: 실무에서는 JPA와 스프링 데이터 JPA 를 기본으로 사용하고, 복잡한 동적 쿼리는 Querydsl 이라는 라이브러리를 사용하면 된다.   
+> QueryDsl 을 사용하면 쿼리도 자바 코드로 안전하게 작성할 수 있고, 동적 쿼리도 편리하게 작성할 수 있다.  
+> 이 조합으로 해결하기 어려운 쿼리는 JPA 가 제공하는 네이티브 쿼리를 사용하거나,  
+> 앞서 학습한 스프링 JdbcTemplate 를 사용하면 된다.
