@@ -430,3 +430,46 @@ flowchart
 > 참고; 생성자가 딱 1개만 있고, 스프링 bean 에 등록되면, `@Autowired` 생략해도 된다.
 ### JdbcTemplate 을 사용하도록 스프링 설정 변경
 * SpringConfig
+
+## JPA
+* JPA 는 **기존의 반복 코드는 물론**이고, **기본적인 SQL도 JPA 가 직접 만들어서 실행**해준다.
+* JPA 를 사용하면, **SQL 과 데이터 중심의 설계에서 객체 중심의 설계로 패러다임을 전환**할 수 있다.
+* JPA 를 사용하면 개발 생산성을 크게 높일 수 있다.
+### build.gradle 파일에 JPA, h2 데이터베이스 관련 라이브러리 추가
+* `spring-boot-starter-data-jpa` 는 내부에 jdbc 관련 라이브러리를 포함한다. 따라서 jdbc는 제거해도 된다.
+### 스프링 부트에 JPA 설정 추가
+* `resources/application.properties`
+> 주의! 스프링부트 2.4 부터는 `spring.datasource.username=sa` 를 꼭 추가해주어야 한다. 그렇지 않으면 오류가 발생한다.
+* `spring.jpa.show-sql`: JPA가 생성하는 SQL을 출력한다.
+  * `true`설정시 출력
+* `spring.jpa.hibernate.ddl-auto`: JPA는 테이블을 자동으로 생성하는 기능을 제공한다.
+  * `none`을 사용하면 해당 기능을 끈다.
+  * `create`를 사용하면 엔티티 정보를 바탕으로 테이블도 직접 생성해준다.
+### JPA 엔티티 매핑
+* Member
+* `@Entity`
+  * JPA 가 관리하는 엔티티에 붙는 어노테이션
+* `@Id`
+  * JPA 가 관리하는 엔티티 PK에 붙는 어노테이션
+* `@GeneratedValue(strategy = GenerationType.IDENTITY)`
+  * Member 테이블의 ID(pk)는 DB에서 값을 생성해주고 있음.
+  * Identity 전략 INSERT INTO MEMBER(NAME) VALUES("spring") 쿼리문에 id를 넣지 않았는데 자동으로 id가 들어가고 있음
+  * 이처럼 id를 자동생성해 주는 것을 Identity 전략이라고 한다.
+  * `strategy = GenerationType.IDENTITY`; Identity 전략을 사용하겠다.
+* `@Column(name = "username")`
+  * username 이라는 컬럼과 매핑이 된다.
+  > `@Column` 어노테이션으로 관계형데이터베이스와 매핑을 한다.  
+  > property 와 column name 이 같은경우는 생략이 가능한것인지 예제에는 빠져있음.
+### JPA 회원 리포지토리
+* JpaMemberRepository
+* EntityManager
+  1. spring-data-jpa 를 gradle 에 추가하고 spring을 구동하게 되면
+  2. application.properties 의 spring.jpa properties 를 읽은 EntityManager 가 bean 으로 스프링 컨테이너에 등록된다.
+  3. 내부적으로 DataSource 들을 들고 있어서, DB 통신 등을 EntityManager 가 관리한다.
+* Constructor 에 EntityManager 를 injection 받는다.
+### 서비스 계층에 트랜잭션 추가
+* `org.springframework.transaction.annotation.Transactional` 사용
+* 스프링은 해당 클래스의 메서드를 실행할 때 트랜잭션을 시작하고, 메서드가 정상 종료되면 트랜잭션을 커밋한다. 만약 런타임 예외가 발생하면 롤백한다.
+* JPA 를 통한 모든 데이터 변경은 트랜잭션 안에서 실행해야 한다.
+### JPA를 사용하도록 스프링 설정 변경
+* SpringConfig
