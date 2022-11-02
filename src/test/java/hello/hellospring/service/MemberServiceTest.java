@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberServiceTest {
 
@@ -33,17 +32,15 @@ class MemberServiceTest {
         // given
         Member member1 = new Member();
         member1.setName("spring1");
-        service.join(member1);
-
-        Member member2 = new Member();
-        member2.setName("spring2");
-        service.join(member2);
 
         // when
-        List<Member> actual = service.findMembers();
+        Long saveId = service.join(member1);
 
         // then
-        assertThat(actual).isEqualTo(Arrays.asList(new Member[]{member1, member2}));
+        Optional<Member> findMember = memberRepository.findById(saveId);
+        String actual = findMember.get().getName();
+        String expected = member1.getName();
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test

@@ -17,9 +17,10 @@ public class MemberService {
     /**
      * 회원가입
      */
-    public void join(Member member) {
+    public Long join(Member member) {
         duplicateValidName(member);
         memberRepository.save(member);
+        return member.getId();
     }
 
     /**
