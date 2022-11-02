@@ -2,6 +2,9 @@ package hello.hellospring.controller;
 
 import hello.hellospring.domain.Member;
 import hello.hellospring.domain.MemberForm;
+import hello.hellospring.repository.JdbcMemberRepository;
+import hello.hellospring.repository.JpaMemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,8 @@ public class MemberController {
     @Autowired
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
+        System.out.println("memberService : " + memberService.getClass());
+        System.out.println("memberService : " + new MemberService(new MemoryMemberRepository()).getClass());
     }
 
     @GetMapping("/members/new")
