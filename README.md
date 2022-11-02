@@ -554,3 +554,20 @@ classDiagram
   * 시간을 측정하는 로직과 핵심 비즈니스의 로직이 섞여서 유지보수가 어렵다.
   * 시간을 측정하는 로직을 별도의 공통 로직으로 만들기 매우 어렵다.
   * 시간을 측정하는 로직을 변경할 때 모든 로직을 찾아가면서 변경해야 한다.
+## AOP 적용
+* AOP: Aspect Oriented Programming
+* 공통 관심 사항(cross-cutting concern) vs 핵심 관심 사항(core concern) 분리
+### 시간 측정 AOP 등록
+* TimeTraceAop
+  * SpringConfig @Configuration 아래에 @Bean 으로 등록 or 직접 @Component 등록
+  * joinPoint.proceed(); : 다음 메소드로 진행됨
+  * @Around("execution(* hello.hellospring..*(..))")
+    * 어디에 적용할 것인지 타겟팅
+    * hello.hellospring 패키지 아래에는 다 적용
+    * 참조; [https://galid1.tistory.com/498](https://galid1.tistory.com/498)
+* 해결
+  * 회원가입, 회원 조회등 **핵심 관심사항**과 시간을 측정하는 **공통 관심 사항**을 **분리**한다.
+  * 시간을 측정하는 로직을 별도의 공통 로직으로 만들었다. 
+  * 핵심 관심 사항을 깔끔하게 유지할 수 있다. 
+  * 변경이 필요하면 이 로직(TimeTraceAop)만 변경하면 된다. 
+  * 원하는 적용 대상을 선택할 수 있다.
