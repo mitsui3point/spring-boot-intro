@@ -575,4 +575,4 @@ classDiagram
 * 스프링 컨테이너에는 MemberService 가 그냥 등록되지 않고 Proxy 기술을 사용하여 MemberService 를 대신하는 객체(MemberService$$Enhance~CGLIB)를 올려놓는다.
   * class hello.hellospring.service.MemberService$$EnhancerBySpringCGLIB$$9ea738aa
   1. 스프링 컨테이너는 MemberService 가 호출되면 MemberService 를 대신하여 올라간 MemberService$$Enhance~CGLIB 객체를 먼저 호출한다. 
-  2. 그 후 MemberService$$Enhance~CGLIB 가 AOP 기능들을 수행한 후 MemberService 를 호출한다.
+  2. 그 후 MemberService$$Enhance~CGLIB 가 AOP 기능들을 수행한 후 joinPoint.proceed() 메소드 호출을 하게 되면 MemberService 의 기능들을 호출한다.
