@@ -5,6 +5,7 @@ import hello.hellospring.repository.MemberRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 @Transactional
 public class MemberService {
 
@@ -18,16 +19,9 @@ public class MemberService {
      * 회원가입
      */
     public Long join(Member member) {
-        long start = System.currentTimeMillis();
-        try {
-            duplicateValidName(member);
-            memberRepository.save(member);
-            return member.getId();
-        } finally {
-            long end = System.currentTimeMillis();
-            long timeMs = end - start;
-            System.out.println("join " + timeMs + "ms");
-        }
+        duplicateValidName(member);
+        memberRepository.save(member);
+        return member.getId();
     }
 
     /**
@@ -43,13 +37,6 @@ public class MemberService {
      * 전체 회원 조회
      */
     public List<Member> findMembers() {
-        long start = System.currentTimeMillis();
-        try {
-            return memberRepository.findAll();
-        } finally {
-            long end = System.currentTimeMillis();
-            long timeMs = end - start;
-            System.out.println("findMembers " + timeMs + "ms");
-        }
+        return memberRepository.findAll();
     }
 }
